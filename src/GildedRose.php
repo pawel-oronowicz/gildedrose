@@ -29,7 +29,7 @@ final class GildedRose
     }
 
     /**
-     * Calculate quality and sell-in for a common item
+     * Calculate quality for a common item
      * @param Item $item
      * @return void
      */
@@ -46,7 +46,7 @@ final class GildedRose
     }
 
     /**
-     * Calculate quality and sell-in for BackstagePass item
+     * Calculate quality for BackstagePass item
      * @param Item $item
      * @return void
      */
