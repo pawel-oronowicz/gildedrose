@@ -62,7 +62,7 @@ final class GildedRose
                 $item->quality++;
             }
 
-            // when 10 days or less and the item is still below max quality
+            // when 5 days or less and the item is still below max quality
             if($item->sell_in <= 5 && $item->quality < self::DEFAULT_MAX_QUALITY) {
                 $item->quality++;
             }
