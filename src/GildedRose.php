@@ -9,25 +9,18 @@ final class GildedRose
     
     public function updateQuality($item): void
     {
-        $is_common_item = true;
-
-        if($item->name === 'Aged Brie') {
-            $is_common_item = false;
-            $this->calculateAgedBrie($item);
-        }
-
-        if($item->name === 'Backstage passes to a TAFKAL80ETC concert') {
-            $is_common_item = false;
-            $this->calculateBackstagePasses($item);
-        }
-
-        if($item->name === 'Sulfuras, Hand of Ragnaros') {
-            $is_common_item = false;
-            $this->calculateSulfuras($item);
-        }
-
-        if($is_common_item) {
-            $this->calculateCommonItem($item);
+        switch($item->name) {
+            case 'Aged Brie':
+                $this->calculateAgedBrie($item);
+                break;
+            case 'Backstage passes to a TAFKAL80ETC concert':
+                $this->calculateBackstagePasses($item);
+                break;
+            case 'Sulfuras, Hand of Ragnaros':
+                $this->calculateSulfuras($item);
+                break;
+            default:
+                $this->calculateCommonItem($item);
         }
 
         if ($item->name !== 'Sulfuras, Hand of Ragnaros') {
