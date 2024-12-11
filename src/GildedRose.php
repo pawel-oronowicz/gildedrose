@@ -4,7 +4,7 @@ namespace App;
 
 final class GildedRose
 {
-    const MAX_QUALITY = 50;
+    const DEFAULT_MAX_QUALITY = 50;
     const LEGENDARY_QUALITY = 80;
     
     public function updateQuality($item): void
@@ -30,38 +30,8 @@ final class GildedRose
             $this->calculateCommonItem($item);
         }
 
-        if ($item->name === 'Aged Brie' || $item->name === 'Backstage passes to a TAFKAL80ETC concert') {
-            if ($item->quality < 50) {
-                $item->quality = $item->quality + 1;
-                if ($item->name == 'Backstage passes to a TAFKAL80ETC concert') {
-                    if ($item->sell_in < 11) {
-                        if ($item->quality < 50) {
-                            $item->quality = $item->quality + 1;
-                        }
-                    }
-                    if ($item->sell_in < 6) {
-                        if ($item->quality < 50) {
-                            $item->quality = $item->quality + 1;
-                        }
-                    }
-                }
-            }
-        }
-
-        if ($item->name != 'Sulfuras, Hand of Ragnaros' && !$is_common_item) {
+        if ($item->name !== 'Sulfuras, Hand of Ragnaros') {
             $item->sell_in = $item->sell_in - 1;
-        }
-
-        if ($item->sell_in < 0) {
-            if ($item->name != 'Aged Brie') {
-                if ($item->name === 'Backstage passes to a TAFKAL80ETC concert') {
-                    $item->quality = $item->quality - $item->quality;
-                }
-            } else {
-                if ($item->quality < 50) {
-                    $item->quality = $item->quality + 1;
-                }
-            }
         }
     }
 
@@ -72,21 +42,38 @@ final class GildedRose
      */
     public function calculateCommonItem(Item $item): void
     {
-        $item->sell_in--;
-
         if($item->quality !== 0) {
             $item->quality--;
 
             // after expiry date
-            if($item->sell_in < 0 && $item->quality > 0) {
+            if($item->sell_in <= 0 && $item->quality > 0) {
                 $item->quality--;
             }
         }
     }
 
+    /**
+     * Calculate quality and sell-in for BackstagePass item
+     * @param Item $item
+     * @return void
+     */
     public function calculateBackstagePasses(Item $item): void
     {
+        if($item->sell_in <= 0) {
+            $item->quality = 0;
+        } elseif($item->quality < self::DEFAULT_MAX_QUALITY) {
+            $item->quality++;
 
+            // when 10 days or less and the item is still below max quality
+            if($item->sell_in <= 10 && $item->quality < self::DEFAULT_MAX_QUALITY) {
+                $item->quality++;
+            }
+
+            // when 10 days or less and the item is still below max quality
+            if($item->sell_in <= 5 && $item->quality < self::DEFAULT_MAX_QUALITY) {
+                $item->quality++;
+            }
+        }
     }
 
     /**
@@ -99,9 +86,21 @@ final class GildedRose
         $item->quality = self::LEGENDARY_QUALITY;
     }
 
+    /**
+     * Calculate quality for AgedBrie item
+     * @param Item $item
+     * @return void
+     */
     public function calculateAgedBrie(Item $item): void
     {
+        if($item->quality < self::DEFAULT_MAX_QUALITY) {
+            $item->quality++;
+        }
 
+        // after expiry date and when the item is still below max quality
+        if($item->sell_in <= 0 && $item->quality < self::DEFAULT_MAX_QUALITY) {
+            $item->quality++;
+        }
     }
 
 }
